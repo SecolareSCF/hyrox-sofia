@@ -603,6 +603,138 @@
   }
   .wlog-stat-value.up { color: #ef4444; }
   .wlog-stat-value.down { color: var(--green); }
+  /* Progress photos */
+  .pset-form {
+    background: rgba(236,72,153,0.06);
+    border: 1px solid rgba(236,72,153,0.18);
+    border-radius: 12px; padding: 12px; margin-bottom: 14px;
+  }
+  .pset-date-row {
+    display: flex; gap: 8px; align-items: flex-end; margin-bottom: 12px;
+  }
+  .pset-date-row .wlog-label { margin-bottom: 4px; }
+  .pset-date-row > div { flex: 1; }
+  .pset-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .pset-slot {
+    position: relative; aspect-ratio: 3/4;
+    background: var(--surface-2); border: 2px dashed var(--border);
+    border-radius: 10px; overflow: hidden; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .pset-slot:active { transform: scale(0.98); }
+  .pset-slot.filled { border-style: solid; border-color: var(--accent); }
+  .pset-slot input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .pset-slot-label {
+    position: absolute; top: 6px; left: 8px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text);
+    background: rgba(255,255,255,0.85); padding: 3px 7px;
+    border-radius: 5px; pointer-events: none;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+  }
+  .pset-slot-placeholder {
+    text-align: center; color: var(--text-dim);
+    font-size: 11px;
+  }
+  .pset-slot-placeholder span { font-size: 22px; display: block; margin-bottom: 4px; }
+  .pset-slot img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .pset-submit {
+    width: 100%; padding: 12px; margin-top: 12px;
+    background: var(--accent); color: white;
+    border: none; border-radius: 10px;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+  }
+  .pset-submit:disabled {
+    background: var(--surface-2); color: var(--text-dim); cursor: not-allowed;
+  }
+  .pset-submit:not(:disabled):active { transform: scale(0.98); }
+  .pset-status {
+    font-size: 12px; color: var(--text-dim); margin-top: 8px; text-align: center;
+    min-height: 16px;
+  }
+  .pset-list {
+    border-top: 1px solid var(--border); padding-top: 12px;
+  }
+  .pset-empty {
+    text-align: center; color: var(--text-dim);
+    padding: 20px 10px; font-size: 13px; font-style: italic;
+  }
+  .pset-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px; margin-bottom: 10px;
+  }
+  .pset-item-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .pset-item-date {
+    font-size: 13px; font-weight: 800; color: var(--accent);
+    background: rgba(236,72,153,0.1); padding: 4px 10px;
+    border-radius: 6px; font-variant-numeric: tabular-nums;
+  }
+  .pset-thumbs {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  }
+  .pset-thumb {
+    position: relative; aspect-ratio: 3/4;
+    background: var(--surface-2); border-radius: 6px;
+    overflow: hidden; cursor: pointer;
+  }
+  .pset-thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .pset-thumb-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.65));
+    color: white; font-size: 9px; font-weight: 700;
+    padding: 8px 4px 4px; text-align: center;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  /* Fullscreen viewer */
+  .photo-viewer {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+    z-index: 200; display: none; align-items: center;
+    justify-content: center; padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom);
+  }
+  .photo-viewer.open { display: flex; }
+  .photo-viewer img {
+    max-width: 100%; max-height: 100%;
+    object-fit: contain;
+  }
+  .photo-viewer-close {
+    position: absolute; top: calc(env(safe-area-inset-top) + 10px);
+    right: 10px; width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: none;
+    color: white; font-size: 22px; cursor: pointer;
+  }
+  .photo-viewer-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); border: none;
+    color: white; font-size: 26px; cursor: pointer;
+  }
+  .photo-viewer-nav.prev { left: 10px; }
+  .photo-viewer-nav.next { right: 10px; }
+  .photo-viewer-label {
+    position: absolute; bottom: calc(env(safe-area-inset-bottom) + 14px);
+    left: 0; right: 0; text-align: center; color: white;
+    font-size: 14px; font-weight: 600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+  .pset-delete {
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 16px; padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .pset-delete:active { background: rgba(239,68,68,0.1); color: #ef4444; }
   .note-card {
     background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.35);
     border-radius: 14px; padding: 14px 16px; margin-top: 10px;
@@ -630,6 +762,7 @@
         <div class="subtitle">Mese 1 · dal 20/04/26</div>
       </div>
       <div style="display:flex; gap:8px; align-items:flex-start;">
+        <button class="icon-btn" id="btn-photos" title="Foto progressi">📷</button>
         <button class="icon-btn" id="btn-weight" title="Monitoraggio peso">📊</button>
         <button class="icon-btn" id="btn-info" title="Info">ⓘ</button>
       </div>
@@ -666,6 +799,58 @@
       <button class="btn btn-primary" id="timer-toggle">Avvia</button>
     </div>
   </div>
+</div>
+
+<!-- Progress Photos Modal -->
+<div class="modal-overlay" id="modal-photos">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">📷 Foto progressi</div>
+      <button class="modal-close" data-close="modal-photos">×</button>
+    </div>
+    <div class="pset-form">
+      <div class="pset-date-row">
+        <div>
+          <label class="wlog-label" for="pset-date">Data</label>
+          <input class="wlog-input" type="date" id="pset-date">
+        </div>
+      </div>
+      <div class="pset-grid">
+        <label class="pset-slot" data-angle="davanti">
+          <span class="pset-slot-label">Davanti</span>
+          <div class="pset-slot-placeholder"><span>📷</span>tocca per foto</div>
+          <input type="file" accept="image/*" capture="user" data-input="davanti">
+        </label>
+        <label class="pset-slot" data-angle="retro">
+          <span class="pset-slot-label">Retro</span>
+          <div class="pset-slot-placeholder"><span>📷</span>tocca per foto</div>
+          <input type="file" accept="image/*" capture="environment" data-input="retro">
+        </label>
+        <label class="pset-slot" data-angle="dx">
+          <span class="pset-slot-label">Destra</span>
+          <div class="pset-slot-placeholder"><span>📷</span>tocca per foto</div>
+          <input type="file" accept="image/*" data-input="dx">
+        </label>
+        <label class="pset-slot" data-angle="sx">
+          <span class="pset-slot-label">Sinistra</span>
+          <div class="pset-slot-placeholder"><span>📷</span>tocca per foto</div>
+          <input type="file" accept="image/*" data-input="sx">
+        </label>
+      </div>
+      <button class="pset-submit" id="pset-save" disabled>Salva set (0/4 foto)</button>
+      <div class="pset-status" id="pset-status"></div>
+    </div>
+    <div class="pset-list" id="pset-list"></div>
+  </div>
+</div>
+
+<!-- Photo viewer (fullscreen) -->
+<div class="photo-viewer" id="photo-viewer">
+  <button class="photo-viewer-close" id="pv-close">×</button>
+  <button class="photo-viewer-nav prev" id="pv-prev">‹</button>
+  <img id="pv-img" alt="">
+  <button class="photo-viewer-nav next" id="pv-next">›</button>
+  <div class="photo-viewer-label" id="pv-label"></div>
 </div>
 
 <!-- Weight Monitoring Modal -->
@@ -1420,6 +1605,241 @@
     document.getElementById('modal-weight').classList.add('open');
   }
   document.getElementById('btn-weight').onclick = openWeightLog;
+
+  // ---- Progress photos (IndexedDB) ----
+  const DB_NAME = 'sofit_photos';
+  const STORE = 'sets';
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(STORE)) {
+          db.createObjectStore(STORE, { keyPath: 'id', autoIncrement: true });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  async function dbAdd(obj) {
+    const db = await openDB();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      const r = tx.objectStore(STORE).add(obj);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function dbGetAll() {
+    const db = await openDB();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readonly');
+      const r = tx.objectStore(STORE).getAll();
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  async function dbDelete(id) {
+    const db = await openDB();
+    return new Promise((res, rej) => {
+      const tx = db.transaction(STORE, 'readwrite');
+      const r = tx.objectStore(STORE).delete(id);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  }
+
+  async function compressImage(file, maxDim = 1400, quality = 0.82) {
+    // Use createImageBitmap if available, fallback to Image
+    let bitmap;
+    try {
+      bitmap = await createImageBitmap(file);
+    } catch(e) {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = url; });
+      bitmap = img;
+    }
+    const W = bitmap.width, H = bitmap.height;
+    const scale = Math.min(1, maxDim / Math.max(W, H));
+    const w = Math.round(W * scale), h = Math.round(H * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    return new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+  }
+
+  const pending = { davanti: null, retro: null, dx: null, sx: null };
+  const angleLabel = { davanti: 'Davanti', retro: 'Retro', dx: 'Destra', sx: 'Sinistra' };
+  const angleOrder = ['davanti','retro','dx','sx'];
+
+  function updatePendingUI() {
+    const filled = angleOrder.filter(a => pending[a]).length;
+    angleOrder.forEach(a => {
+      const slot = document.querySelector(`.pset-slot[data-angle="${a}"]`);
+      if (!slot) return;
+      slot.classList.toggle('filled', !!pending[a]);
+      const existingImg = slot.querySelector('.pset-preview');
+      if (pending[a]) {
+        if (!existingImg) {
+          const img = document.createElement('img');
+          img.className = 'pset-preview';
+          img.src = URL.createObjectURL(pending[a]);
+          slot.appendChild(img);
+          const ph = slot.querySelector('.pset-slot-placeholder');
+          if (ph) ph.style.display = 'none';
+        } else {
+          URL.revokeObjectURL(existingImg.src);
+          existingImg.src = URL.createObjectURL(pending[a]);
+        }
+      } else {
+        if (existingImg) { URL.revokeObjectURL(existingImg.src); existingImg.remove(); }
+        const ph = slot.querySelector('.pset-slot-placeholder');
+        if (ph) ph.style.display = '';
+      }
+    });
+    const btn = document.getElementById('pset-save');
+    btn.disabled = filled === 0;
+    btn.textContent = `Salva set (${filled}/4 foto)`;
+  }
+
+  document.querySelectorAll('[data-input]').forEach(input => {
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const angle = input.getAttribute('data-input');
+      const status = document.getElementById('pset-status');
+      status.textContent = 'Comprimo immagine…';
+      try {
+        const blob = await compressImage(file);
+        pending[angle] = blob;
+        updatePendingUI();
+        status.textContent = '';
+      } catch (err) {
+        status.textContent = 'Errore elaborazione foto';
+        console.error(err);
+      }
+    });
+  });
+
+  async function renderPhotoList() {
+    const list = document.getElementById('pset-list');
+    const sets = (await dbGetAll()).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    if (sets.length === 0) {
+      list.innerHTML = `<div class="pset-empty">Nessuna foto salvata. Carica il primo set sopra.</div>`;
+      return;
+    }
+    list.innerHTML = sets.map(s => {
+      const thumbs = angleOrder.map(a => {
+        const blob = s.photos && s.photos[a];
+        if (!blob) return `<div class="pset-thumb" style="background:var(--surface-2)"><div class="pset-thumb-label">${angleLabel[a]}</div></div>`;
+        return `<div class="pset-thumb" data-set-id="${s.id}" data-angle="${a}">
+          <img src="" data-blob-idx="${s.id}-${a}">
+          <div class="pset-thumb-label">${angleLabel[a]}</div>
+        </div>`;
+      }).join('');
+      return `<div class="pset-item">
+        <div class="pset-item-head">
+          <div class="pset-item-date">${fmtDateIT(s.date)}</div>
+          <button class="pset-delete" data-pset-del="${s.id}">🗑</button>
+        </div>
+        <div class="pset-thumbs">${thumbs}</div>
+      </div>`;
+    }).join('');
+
+    // Hydrate thumbnail URLs
+    const urlCache = {};
+    list.querySelectorAll('img[data-blob-idx]').forEach(img => {
+      const [id, angle] = img.getAttribute('data-blob-idx').split('-');
+      const set = sets.find(s => String(s.id) === id);
+      if (set && set.photos && set.photos[angle]) {
+        const url = URL.createObjectURL(set.photos[angle]);
+        img.src = url;
+        urlCache[img.dataset.blobIdx] = url;
+      }
+    });
+
+    // Thumb click: open viewer
+    list.querySelectorAll('.pset-thumb[data-set-id]').forEach(t => {
+      t.addEventListener('click', () => {
+        const id = parseInt(t.getAttribute('data-set-id'), 10);
+        const angle = t.getAttribute('data-angle');
+        const set = sets.find(s => s.id === id);
+        if (!set) return;
+        openPhotoViewer(set, angle);
+      });
+    });
+
+    // Delete
+    list.querySelectorAll('[data-pset-del]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Eliminare questo set di foto?')) return;
+        const id = parseInt(btn.getAttribute('data-pset-del'), 10);
+        await dbDelete(id);
+        await renderPhotoList();
+      });
+    });
+  }
+
+  async function openPhotoViewer(set, startAngle) {
+    const viewer = document.getElementById('photo-viewer');
+    const img = document.getElementById('pv-img');
+    const label = document.getElementById('pv-label');
+    const available = angleOrder.filter(a => set.photos && set.photos[a]);
+    let idx = Math.max(0, available.indexOf(startAngle));
+    const urls = {};
+    available.forEach(a => { urls[a] = URL.createObjectURL(set.photos[a]); });
+    function show() {
+      const a = available[idx];
+      img.src = urls[a];
+      label.textContent = `${fmtDateIT(set.date)} · ${angleLabel[a]}`;
+    }
+    show();
+    viewer.classList.add('open');
+    const prev = document.getElementById('pv-prev');
+    const next = document.getElementById('pv-next');
+    prev.onclick = (e) => { e.stopPropagation(); idx = (idx - 1 + available.length) % available.length; show(); };
+    next.onclick = (e) => { e.stopPropagation(); idx = (idx + 1) % available.length; show(); };
+    document.getElementById('pv-close').onclick = close;
+    viewer.onclick = (e) => { if (e.target === viewer || e.target === img) close(); };
+    function close() {
+      viewer.classList.remove('open');
+      Object.values(urls).forEach(u => URL.revokeObjectURL(u));
+    }
+  }
+
+  document.getElementById('pset-save').onclick = async () => {
+    const date = document.getElementById('pset-date').value || todayISO();
+    const hasAny = angleOrder.some(a => pending[a]);
+    if (!hasAny) return;
+    const photos = {};
+    angleOrder.forEach(a => { if (pending[a]) photos[a] = pending[a]; });
+    try {
+      await dbAdd({ date, photos, createdAt: Date.now() });
+      // reset
+      angleOrder.forEach(a => {
+        pending[a] = null;
+        const input = document.querySelector(`[data-input="${a}"]`);
+        if (input) input.value = '';
+      });
+      updatePendingUI();
+      document.getElementById('pset-status').textContent = '✓ Set salvato';
+      setTimeout(() => { document.getElementById('pset-status').textContent = ''; }, 2000);
+      await renderPhotoList();
+    } catch (err) {
+      document.getElementById('pset-status').textContent = 'Errore salvataggio: ' + (err && err.message);
+    }
+  };
+
+  document.getElementById('btn-photos').onclick = () => {
+    document.getElementById('pset-date').value = todayISO();
+    angleOrder.forEach(a => { pending[a] = null; });
+    updatePendingUI();
+    renderPhotoList();
+    document.getElementById('modal-photos').classList.add('open');
+  };
   document.getElementById('wl-add').onclick = () => {
     const date = document.getElementById('wl-date').value || todayISO();
     const peso = document.getElementById('wl-peso').value.trim();
