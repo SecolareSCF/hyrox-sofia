@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SoF(r)it">
+<meta name="theme-color" content="#fdf4f7">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>SoF(r)it – Sofia Barbera</title>
+<style>
+  :root {
+    --bg: #fdf4f7;
+    --surface: #ffffff;
+    --surface-2: #f5eaf0;
+    --border: #e3d1db;
+    --text: #1a1a1f;
+    --text-dim: #6d6d76;
+    --accent: #ec4899;
+    --accent-dim: #fde2ed;
+    --green: #16a34a;
+    --blue: #2563eb;
+    --yellow: #ca8a04;
+    --shadow: 0 4px 12px rgba(60,20,40,0.06);
+    /* Block palettes (background, border, accent) */
+    --blk-superset-bg: rgba(22,163,74,0.08);
+    --blk-superset-border: rgba(22,163,74,0.25);
+    --blk-superset-accent: #16a34a;
+    --blk-wod-bg: rgba(202,138,4,0.1);
+    --blk-wod-border: rgba(202,138,4,0.28);
+    --blk-wod-accent: #a16207;
+    --blk-cardio-bg: rgba(234,88,12,0.08);
+    --blk-cardio-border: rgba(234,88,12,0.25);
+    --blk-cardio-accent: #ea580c;
+    --blk-strength-bg: rgba(100,116,139,0.08);
+    --blk-strength-border: rgba(100,116,139,0.2);
+    --blk-strength-accent: #475569;
+    --blk-warmup-bg: rgba(37,99,235,0.08);
+    --blk-warmup-border: rgba(37,99,235,0.22);
+    --blk-warmup-accent: #2563eb;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px; line-height: 1.5;
+    overscroll-behavior-y: contain;
+  }
+  html {
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #ffffff 0%, rgba(255,255,255,0) 60%),
+      radial-gradient(1000px 500px at 95% 5%, #fff1f7 0%, rgba(255,241,247,0) 55%),
+      linear-gradient(180deg, #fdf4f7 0%, #f0e4ea 100%);
+    background-attachment: fixed;
+    min-height: 100%;
+  }
+  body { background: transparent; }
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+    min-height: 100vh;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(180deg, rgba(253,244,247,0.92) 0%, rgba(253,244,247,0.82) 100%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: env(safe-area-inset-top) 0 0 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    padding: 14px 16px 12px;
+  }
+  .title-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .title {
+    font-size: 22px; font-weight: 800; letter-spacing: 0.01em;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .title-accent {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase; margin-bottom: 2px;
+  }
+  .subtitle { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text); cursor: pointer; font-size: 18px;
+  }
+  .icon-btn:active { background: var(--surface-2); transform: scale(0.95); }
+  .week-tabs {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px;
+  }
+  .week-tab {
+    padding: 10px 10px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px;
+    text-align: center; font-weight: 700; font-size: 13px;
+    cursor: pointer; color: var(--text-dim); transition: all 0.15s;
+  }
+  .week-tab.active {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+  .week-tab small { display: block; font-size: 10px; font-weight: 400; opacity: 0.85; margin-top: 2px; }
+  .day-tabs {
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    padding-bottom: 4px; margin: 0 -16px; padding-left: 16px; padding-right: 16px;
+  }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: 13px; font-weight: 500; color: var(--text-dim);
+    cursor: pointer; white-space: nowrap;
+  }
+  .day-tab.active {
+    background: var(--text); color: var(--bg); border-color: var(--text);
+  }
+  .day-tab.rest { opacity: 0.5; }
+  .day-tab .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); margin-left: 6px;
+  }
+  main { padding: 16px; max-width: 700px; margin: 0 auto; }
+  .day-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .day-title { font-size: 22px; font-weight: 700; }
+  .day-meta { font-size: 12px; color: var(--text-dim); }
+  .progress-bar {
+    height: 4px; background: var(--surface); border-radius: 2px;
+    overflow: hidden; margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), #ff8a65);
+    transition: width 0.3s;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 10px;
+    position: relative; overflow: hidden;
+  }
+  .card.done { opacity: 0.55; }
+  .card.done .card-name { text-decoration: line-through; color: var(--text-dim); }
+  .card-head {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .check {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px;
+    border: 2px solid var(--border); background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px; cursor: pointer; transition: all 0.15s;
+  }
+  .check.done {
+    background: var(--green); border-color: var(--green);
+  }
+  .check.done::after {
+    content: '✓'; color: white; font-weight: 800; font-size: 14px;
+  }
+  .card-body { flex: 1; min-width: 0; }
+  .card-name {
+    font-size: 15px; font-weight: 600; line-height: 1.4;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+  }
+  .tag {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 6px;
+    background: var(--surface-2); color: var(--text-dim);
+    letter-spacing: 0.03em; text-transform: uppercase;
+  }
+  .tag.serie { background: rgba(37,99,235,0.12); color: #1d4ed8; }
+  .tag.reps { background: rgba(22,163,74,0.12); color: #15803d; }
+  .tag.rec { background: rgba(202,138,4,0.14); color: #854d0e; }
+  .tag.rpe { background: rgba(236,72,153,0.14); color: #be185d; }
+  .tag.note { background: var(--surface-2); color: var(--text-dim); text-transform: none; }
+  .video-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px; padding: 8px 12px;
+    background: rgba(255,87,34,0.15); color: var(--accent);
+    border: 1px solid rgba(255,87,34,0.3); border-radius: 8px;
+    font-size: 13px; font-weight: 600; text-decoration: none;
+    cursor: pointer;
+  }
+  .video-btn:active { background: rgba(255,87,34,0.25); }
+  .weight-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 10px;
+  }
+  .weight-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .weight-input {
+    flex: 1; min-width: 0; padding: 8px 12px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-size: 14px; font-weight: 600;
+    font-family: inherit;
+  }
+  .weight-input:focus {
+    outline: none; border-color: var(--accent);
+    background: rgba(255,87,34,0.05);
+  }
+  .weight-input::placeholder { color: var(--text-dim); font-weight: 400; font-style: italic; }
+  .weight-hint {
+    font-size: 11px; color: var(--text-dim);
+    margin-left: auto; flex-shrink: 0;
+  }
+  .weight-hint strong {
+    color: #4ade80; font-variant-numeric: tabular-nums;
+  }
+  .ex-note-row {
+    margin-top: 8px;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .ex-note-input {
+    flex: 1; min-width: 0; padding: 8px 12px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-size: 13px; font-family: inherit;
+    resize: vertical; min-height: 36px; max-height: 120px;
+    line-height: 1.4;
+  }
+  .ex-note-input:focus {
+    outline: none; border-color: var(--accent);
+    background: rgba(255,87,34,0.05);
+  }
+  .ex-note-input::placeholder { color: var(--text-dim); font-style: italic; }
+  /* End-of-workout feedback card */
+  .feedback-card {
+    background: linear-gradient(135deg, rgba(255,87,34,0.08), rgba(255,87,34,0.02));
+    border: 1px solid rgba(255,87,34,0.25);
+    border-radius: 16px; padding: 18px; margin-top: 24px;
+  }
+  .feedback-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 16px; font-weight: 700; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 14px;
+  }
+  .feedback-section { margin-bottom: 16px; }
+  .feedback-section:last-child { margin-bottom: 0; }
+  .feedback-section-label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .score-buttons {
+    display: grid; grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+  }
+  .score-btn {
+    aspect-ratio: 1; padding: 0; min-height: 36px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text-dim);
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.15s;
+  }
+  .score-btn:active { transform: scale(0.94); }
+  .score-btn.selected {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+  .score-btn.scale-low { color: #4ade80; border-color: rgba(74,222,128,0.3); }
+  .score-btn.scale-mid { color: #facc15; border-color: rgba(250,204,21,0.3); }
+  .score-btn.scale-high { color: #f87171; border-color: rgba(248,113,113,0.3); }
+  .score-btn.selected.scale-low { background: #22c55e; color: white; border-color: #22c55e; }
+  .score-btn.selected.scale-mid { background: #eab308; color: white; border-color: #eab308; }
+  .score-btn.selected.scale-high { background: #ef4444; color: white; border-color: #ef4444; }
+  .feedback-note {
+    width: 100%; padding: 10px 12px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-size: 14px; font-family: inherit;
+    resize: vertical; min-height: 80px; max-height: 240px;
+    line-height: 1.5; box-sizing: border-box;
+  }
+  .feedback-note:focus {
+    outline: none; border-color: var(--accent);
+    background: rgba(255,87,34,0.05);
+  }
+  .feedback-note::placeholder { color: var(--text-dim); font-style: italic; }
+  .feedback-saved {
+    font-size: 11px; color: var(--green); margin-top: 6px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feedback-saved.show { opacity: 1; }
+  .rest-card {
+    text-align: center; padding: 40px 20px;
+    background: var(--surface); border-radius: 14px;
+    border: 1px dashed var(--border);
+  }
+  .rest-card-icon { font-size: 48px; margin-bottom: 12px; }
+  .rest-card-title { font-size: 18px; font-weight: 700; }
+  .rest-card-sub { color: var(--text-dim); margin-top: 6px; font-size: 14px; }
+  .fab-timer {
+    position: fixed; right: 16px;
+    bottom: calc(env(safe-area-inset-bottom) + 20px);
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--accent); color: white;
+    border: none; font-size: 24px; box-shadow: var(--shadow);
+    cursor: pointer; z-index: 20;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fab-timer:active { transform: scale(0.92); }
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 100; display: none; align-items: flex-end;
+    justify-content: center; backdrop-filter: blur(6px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); width: 100%; max-width: 500px;
+    border-radius: 20px 20px 0 0; padding: 20px 20px 40px;
+    border-top: 1px solid var(--border);
+    animation: slideUp 0.25s ease-out;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .modal-title { font-size: 18px; font-weight: 700; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--surface-2); border: none; color: var(--text);
+    font-size: 20px; cursor: pointer;
+  }
+  /* Timer */
+  .timer-display {
+    font-size: 72px; font-weight: 800; text-align: center;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+    margin: 20px 0; color: var(--text);
+  }
+  .timer-display.running { color: var(--accent); }
+  .timer-display.done { color: var(--green); animation: pulse 0.6s infinite; }
+  @keyframes pulse { 50% { opacity: 0.5; } }
+  .timer-presets {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    margin-bottom: 16px;
+  }
+  .preset {
+    padding: 12px 4px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 10px;
+    color: var(--text); font-weight: 600; font-size: 14px;
+    cursor: pointer;
+  }
+  .preset:active { background: var(--border); }
+  .timer-controls {
+    display: flex; gap: 10px;
+  }
+  .btn {
+    flex: 1; padding: 14px; border-radius: 12px;
+    border: none; font-weight: 700; font-size: 15px;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+  /* HR zones */
+  .zone-input {
+    display: flex; gap: 10px; margin-bottom: 16px; align-items: center;
+  }
+  .zone-input label { font-size: 14px; color: var(--text-dim); }
+  .zone-input input {
+    flex: 1; padding: 10px 12px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-size: 16px;
+  }
+  .zone-row {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .zone-row:last-child { border-bottom: none; }
+  .zone-label { font-weight: 700; }
+  .zone-bpm { font-variant-numeric: tabular-nums; color: var(--text-dim); }
+  /* Info */
+  .info-block {
+    padding: 14px; background: var(--surface-2);
+    border-radius: 10px; margin-bottom: 10px; font-size: 13px;
+    line-height: 1.6;
+  }
+  .info-block strong { color: var(--accent); }
+  .warmup-card {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(59,130,246,0.02));
+    border: 1px solid rgba(59,130,246,0.2); color: var(--text);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 14px;
+    font-size: 14px; white-space: pre-wrap; line-height: 1.6;
+  }
+  .warmup-card .tag-hdr {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    color: #60a5fa; text-transform: uppercase; margin-bottom: 6px;
+  }
+  /* Block containers */
+  .block {
+    border-radius: 16px; padding: 12px;
+    margin-bottom: 16px; border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .block-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 6px 12px;
+    border-bottom: 1px dashed var(--border);
+    margin-bottom: 10px;
+  }
+  .block-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .block-title {
+    font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .block-sub {
+    font-size: 11px; color: var(--text-dim);
+    margin-left: auto;
+  }
+  .block .card { margin-bottom: 8px; }
+  .block .card:last-child { margin-bottom: 0; }
+
+  /* Superserie — verde */
+  .block.superset { background: var(--blk-superset-bg); border-color: var(--blk-superset-border); }
+  .block.superset .block-icon { background: var(--blk-superset-border); color: var(--blk-superset-accent); }
+  .block.superset .block-title { color: var(--blk-superset-accent); }
+  .block.superset .card { background: rgba(22,163,74,0.06); border-color: rgba(22,163,74,0.22); }
+  .block.superset .card.done { background: rgba(22,163,74,0.12); }
+
+  /* Mini-WOD — ambra/giallo */
+  .block.wod { background: var(--blk-wod-bg); border-color: var(--blk-wod-border); }
+  .block.wod .block-icon { background: var(--blk-wod-border); color: var(--blk-wod-accent); }
+  .block.wod .block-title { color: var(--blk-wod-accent); }
+  .block.wod .card { background: rgba(202,138,4,0.06); border-color: rgba(202,138,4,0.22); }
+  .block.wod .card.done { background: rgba(202,138,4,0.14); }
+
+  /* Cardio — arancio */
+  .block.cardio { background: var(--blk-cardio-bg); border-color: var(--blk-cardio-border); }
+  .block.cardio .block-icon { background: var(--blk-cardio-border); color: var(--blk-cardio-accent); }
+  .block.cardio .block-title { color: var(--blk-cardio-accent); }
+  .block.cardio .card { background: rgba(234,88,12,0.06); border-color: rgba(234,88,12,0.22); }
+  .block.cardio .card.done { background: rgba(234,88,12,0.12); }
+
+  /* Forza — grigio-ardesia */
+  .block.strength { background: var(--blk-strength-bg); border-color: var(--blk-strength-border); }
+  .block.strength .block-icon { background: var(--blk-strength-border); color: var(--blk-strength-accent); }
+  .block.strength .block-title { color: var(--blk-strength-accent); }
+  .block.strength .card { background: rgba(100,116,139,0.06); border-color: rgba(100,116,139,0.2); }
+  .block.strength .card.done { background: rgba(100,116,139,0.14); }
+
+  /* Riscaldamento — blu */
+  .block.warmup { background: var(--blk-warmup-bg); border-color: var(--blk-warmup-border); }
+  .block.warmup .block-icon { background: var(--blk-warmup-border); color: var(--blk-warmup-accent); }
+  .block.warmup .block-title { color: var(--blk-warmup-accent); }
+  .block.warmup .card { background: rgba(37,99,235,0.06); border-color: rgba(37,99,235,0.22); }
+  .block.warmup .card.done { background: rgba(37,99,235,0.12); }
+
+  /* Input dentro card colorata: semitrasparenti così ereditano il tono */
+  .block .weight-input, .block .ex-note-input {
+    background: rgba(255,255,255,0.65);
+  }
+  /* Motivational quote */
+  .motivation {
+    background: linear-gradient(135deg, rgba(255,87,34,0.12), rgba(255,87,34,0.04));
+    border: 1px solid rgba(255,87,34,0.25);
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 18px;
+    font-size: 14px; line-height: 1.5; color: var(--text);
+    position: relative;
+  }
+  .motivation::before {
+    content: '"'; position: absolute; top: -6px; left: 10px;
+    font-size: 40px; color: var(--accent); font-weight: 900;
+    line-height: 1; opacity: 0.5;
+  }
+  .motivation-text { font-style: italic; padding-left: 18px; font-weight: 500; }
+  .motivation-sign {
+    font-size: 10px; color: var(--text-dim); text-align: right;
+    margin-top: 6px; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .motivation-shuffle {
+    position: absolute; top: 8px; right: 8px;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-dim); font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .motivation-shuffle:active { background: var(--surface-2); }
+  .note-card {
+    background: rgba(234,179,8,0.1); border: 1px solid rgba(234,179,8,0.35);
+    border-radius: 14px; padding: 14px 16px; margin-top: 10px;
+    font-size: 13px; color: #854d0e; font-style: italic;
+    white-space: pre-wrap; line-height: 1.6;
+  }
+  .link-external {
+    color: var(--blue); text-decoration: underline; word-break: break-all;
+  }
+  @media (min-width: 600px) {
+    .day-tab { font-size: 14px; padding: 10px 16px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="title-row">
+      <div>
+        <div class="title-accent">SoF(r)it</div>
+        <div class="title">SOFIA BARBERA</div>
+        <div class="subtitle">Mese 1 · dal 27/04/26</div>
+      </div>
+      <button class="icon-btn" id="btn-info" title="Info e zone FC">ⓘ</button>
+    </div>
+    <div class="week-tabs" id="week-tabs"></div>
+    <div class="day-tabs" id="day-tabs"></div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<button class="fab-timer" id="btn-timer" title="Timer recupero">⏱</button>
+
+<!-- Timer Modal -->
+<div class="modal-overlay" id="modal-timer">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Timer recupero</div>
+      <button class="modal-close" data-close="modal-timer">×</button>
+    </div>
+    <div class="timer-display" id="timer-display">00:00</div>
+    <div class="timer-presets">
+      <button class="preset" data-sec="30">30"</button>
+      <button class="preset" data-sec="60">1'</button>
+      <button class="preset" data-sec="90">1'30"</button>
+      <button class="preset" data-sec="120">2'</button>
+      <button class="preset" data-sec="150">2'30"</button>
+      <button class="preset" data-sec="180">3'</button>
+      <button class="preset" data-sec="240">4'</button>
+      <button class="preset" data-sec="300">5'</button>
+    </div>
+    <div class="timer-controls">
+      <button class="btn btn-ghost" id="timer-reset">Reset</button>
+      <button class="btn btn-primary" id="timer-toggle">Avvia</button>
+    </div>
+  </div>
+</div>
+
+<!-- Info Modal -->
+<div class="modal-overlay" id="modal-info">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Info · Zone FC</div>
+      <button class="modal-close" data-close="modal-info">×</button>
+    </div>
+    <div class="info-block">
+      <strong>Mese 1 · target RPE 6-7</strong><br>
+      Il carico è giusto quando riesci a finire tutte le serie con tecnica pulita e ti restano "in canna" ancora 3-4 reps. Se le ultime reps escono male, scendi di peso.
+    </div>
+    <div class="info-block">
+      <strong>Legenda blocchi:</strong><br>
+      • <em>Riscaldamento</em> (blu): bike/tapis/climb per attivare.<br>
+      • <em>Forza</em> (grigio): esercizi classici con serie e reps.<br>
+      • <em>Superserie</em> (verde): due esercizi di fila senza rest, poi riposa a fine combo.<br>
+      • <em>Mini-WOD</em> (giallo): circuito misto, N giri con rest breve. Ritmo fluido.<br>
+      • <em>Cardio</em> (arancio): chiusura cardio finale.
+    </div>
+    <div class="info-block">
+      <strong>Monitoraggio peso & misure</strong><br>
+      • Pesati sempre alla stessa ora, mattina a digiuno dopo il bagno.<br>
+      • Misure corporee una volta a settimana, non di più.<br>
+      • Il peso oscilla (ritenzione, ciclo, cibo del giorno prima): guarda il trend settimanale, non la singola pesata.<br>
+      • Foto mensili stessa luce/posa raccontano più della bilancia.
+    </div>
+    <div class="zone-input">
+      <label for="eta">La tua età:</label>
+      <input type="number" id="eta" value="30" min="10" max="99">
+      <label>
+        <select id="sesso" style="padding:10px; background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:8px;">
+          <option value="m">Uomo</option>
+          <option value="f">Donna</option>
+        </select>
+      </label>
+    </div>
+    <div id="zone-list"></div>
+    <div class="info-block" style="margin-top:12px;">
+      <small style="color:var(--text-dim);">Formula: FCmax = 220 - età (uomo) · 226 - età (donna). Usa solo se non hai parametri affidabili da sportwatch.</small>
+    </div>
+  </div>
+</div>
+
+<script id="app-data" type="application/json"></script>
+<script>
+(function () {
+  'use strict';
+
+  const DATA_JSON = {"esercizi":{"Back squat":"https://www.youtube.com/results?search_query=back+squat+tutorial","Goblet squat":"https://www.youtube.com/results?search_query=goblet+squat+tutorial","Leg press":"https://www.youtube.com/results?search_query=leg+press+tutorial","Affondi bulgari (Bulgarian split squat)":"https://www.youtube.com/results?search_query=bulgarian+split+squat","Wall sit":"https://www.youtube.com/results?search_query=wall+sit+tutorial","Box step up monopodalico":"https://www.youtube.com/results?search_query=single+leg+box+step+up","Box jump":"https://www.youtube.com/results?search_query=box+jump+tutorial","Leg curl sdraiata":"https://www.youtube.com/results?search_query=lying+leg+curl","Hip thrust":"https://www.youtube.com/results?search_query=hip+thrust+tutorial","Stacco rumeno con manubri":"https://www.youtube.com/results?search_query=dumbbell+romanian+deadlift","Glute kickback al cavo":"https://www.youtube.com/results?search_query=cable+glute+kickback","Abduzione laterale al cavo":"https://www.youtube.com/results?search_query=cable+hip+abduction","Calci indietro a 4 zampe (donkey kick)":"https://www.youtube.com/results?search_query=donkey+kick+exercise","Glute bridge":"https://www.youtube.com/results?search_query=glute+bridge+tutorial","Affondi inversi":"https://www.youtube.com/results?search_query=reverse+lunge","Affondi statici":"https://www.youtube.com/results?search_query=static+lunge","Air squat":"https://www.youtube.com/results?search_query=air+squat+form","Jumping jack":"https://www.youtube.com/results?search_query=jumping+jack+exercise","Lat machine":"https://www.youtube.com/results?search_query=lat+pulldown+tutorial","Chest press (macchina o manubri)":"https://www.youtube.com/results?search_query=chest+press+machine","Push up":"https://www.youtube.com/results?search_query=push+up+proper+form","Rematore con manubrio":"https://www.youtube.com/results?search_query=one+arm+dumbbell+row","Alzate laterali":"https://www.youtube.com/results?search_query=lateral+raise+tutorial","Face pull":"https://www.youtube.com/results?search_query=face+pull+exercise","Wall ball":"https://www.youtube.com/results?search_query=wall+ball+exercise","Plank":"https://www.youtube.com/results?search_query=plank+proper+form","Side plank":"https://www.youtube.com/results?search_query=side+plank+tutorial","Crunch":"https://www.youtube.com/results?search_query=crunch+tutorial","Dead bug":"https://www.youtube.com/results?search_query=dead+bug+exercise","Russian twist":"https://www.youtube.com/results?search_query=russian+twist","Mountain climber":"https://www.youtube.com/results?search_query=mountain+climber+exercise","Frog pump":"https://www.youtube.com/results?search_query=frog+pump+exercise+glutes","Good morning con bilanciere":"https://www.youtube.com/results?search_query=good+morning+exercise+barbell"},"piano":{"intestazione":{"titolo":"SOF(R)IT","atleta":"SOFIA BARBERA","inizio":"27/04/26","note_test":["RPE: scala 1-10 — target Mese 1: 6-7 (lavoro controllato)","Carico S1–S4: peso usato ogni settimana. Riempi dopo la seduta."]},"settimane":[{"numero":1,"inizio":"27/04/26","etichetta":"S1","giorni":[{"nome":"LUNEDÌ — Lower A (quad focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Bike riscaldamento","serie":"10 min","rec":null,"note":"Progressiva","rpe":null}]},{"tipo":"strength","items":[{"nome":"Goblet squat","serie":"4x12","rec":"75\"","note":"RPE 6-7","rpe":null},{"nome":"Leg press","serie":"4x12","rec":"90\"","note":"Piedi medi","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Affondi bulgari + Wall sit","serie":"3x10 per gamba + 45\"","rec":"75\"","note":"Tenuta 3\" in fondo all'affondo","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico","serie":"3x10 per gamba","rec":"60\"","note":"Spinta dal tallone, no slancio","rpe":null},{"nome":"Leg curl sdraiata","serie":"3x15","rec":"60\"","note":"Controllata","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD A (5 giri, rec. 45\")","serie":"15 air squat + 10 wall ball (3-4 kg) + 20\" plank","rec":"45\" tra giri","note":"Nessuna pausa interna","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"15 min","rec":"—","note":"Passo costante, livello medio","rpe":null}]}]},{"nome":"MARTEDÌ — Upper + core","blocchi":[{"tipo":"warmup","items":[{"nome":"Tapis riscaldamento","serie":"8 min","rec":null,"note":"Pendenza 12%","rpe":null}]},{"tipo":"strength","items":[{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null},{"nome":"Chest press","serie":"4x12","rec":"75\"","note":"Gomiti a 45°","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Alzate laterali + Push up","serie":"4x12 + 4xmax","rec":"60\"","note":"Push up anche su panca inclinata","rpe":null}]},{"tipo":"strength","items":[{"nome":"Face pull","serie":"3x15","rec":"45\"","note":"Gomiti alti","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD B (5 giri, rec. 45\")","serie":"10 push up + 10 rematore manubrio leggero per lato + 10 wall ball + 20 mountain climber","rec":"45\" tra giri","note":"Fluido","rpe":null}]},{"tipo":"strength","items":[{"nome":"Crunch","serie":"3x20","rec":"30\"","note":"Controllati","rpe":null},{"nome":"Dead bug","serie":"3x12 per lato","rec":"30\"","note":"Schiena piatta a terra","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Bike finale","serie":"12 min","rec":"—","note":"Recupero attivo","rpe":null}]}]},{"nome":"Mercoledì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"GIOVEDÌ — Lower B (glutei focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Climb riscaldamento","serie":"8 min","rec":null,"note":"Passo lento","rpe":null}]},{"tipo":"strength","items":[{"nome":"Hip thrust","serie":"4x10","rec":"90\"","note":"Tenuta 3\" in massima contrazione","rpe":null},{"nome":"Stacco rumeno con manubri","serie":"4x12","rec":"90\"","note":"Schiena neutra, no inarcamento","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Frog pump + Good morning con bilanciere leggero (scarico)","serie":"3x20 + 3x12","rec":"75\"","note":null,"rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico con manubri leggeri","serie":"3x10 per gamba","rec":"60\"","note":"Focus sul gluteo","rpe":null},{"nome":"Glute kickback al cavo con cavigliera","serie":"4x12 per gamba","rec":"60\"","note":"Tenuta 2\" sul picco","rpe":null},{"nome":"Abduzione laterale al cavo con cavigliera","serie":"4x15 per gamba","rec":"45\"","note":"Tempo lento","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD C — glutes pump (6 giri, rec. 40\")","serie":"15 glute bridge + 10 affondi inversi alternati + 10 wall ball + 20 calci indietro a 4 zampe (10 per gamba)","rec":"40\" tra giri","note":"Pump garantito","rpe":null}]},{"tipo":"strength","items":[{"nome":"Russian twist","serie":"3x25","rec":"30\"","note":"Con o senza peso leggero","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"20 min","rec":"—","note":"Passo costante, livello medio-alto","rpe":null}]}]},{"nome":"Venerdì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"SABATO — Full body + cardio strutturato","blocchi":[{"tipo":"strength","items":[{"nome":"Push Press","serie":"4x12","rec":"75\"","note":"Fluido","rpe":null},{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Hip thrust + Wall sit","serie":"3x12 + 45\"","rec":"75\"","note":"Tenuta 3\" in massima contrazione hip thrust","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box jump","serie":"3x8","rec":"90\"","note":"Cubo 30-40 cm. Salita esplosiva, discesa camminata","rpe":null},{"nome":"Affondi statici","serie":"3x12 per gamba","rec":"60\"","note":"Alternare le gambe tra serie","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD D — full body (6 giri, rec. 60\")","serie":"10 goblet squat leggeri + 10 push up + 10 wall ball + 10 box step up per gamba + 20 jumping jack","rec":"60\" tra giri","note":"Cuore metabolico","rpe":null}]},{"tipo":"strength","items":[{"nome":"Dead bug","serie":"3x15 per lato","rec":"30\"","note":"Controllo totale","rpe":null}]},{"tipo":"cardio","items":[{"nome":"HIIT tapis","serie":"8 serie","rec":"—","note":"1 min camminata veloce pendenza 15% + 1 min piano","rpe":null}]}]},{"nome":"Domenica","blocchi":[{"tipo":"rest","items":["rest"]}]}]},{"numero":2,"inizio":"04/05/26","etichetta":"S2","giorni":[{"nome":"LUNEDÌ — Lower A (quad focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Bike riscaldamento","serie":"10 min","rec":null,"note":"Progressiva","rpe":null}]},{"tipo":"strength","items":[{"nome":"Goblet squat","serie":"4x12","rec":"75\"","note":"RPE 6-7","rpe":null},{"nome":"Leg press","serie":"4x12","rec":"90\"","note":"Piedi medi","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Affondi bulgari + Wall sit","serie":"3x10 per gamba + 45\"","rec":"75\"","note":"Tenuta 3\" in fondo all'affondo","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico","serie":"3x10 per gamba","rec":"60\"","note":"Spinta dal tallone, no slancio","rpe":null},{"nome":"Leg curl sdraiata","serie":"3x15","rec":"60\"","note":"Controllata","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD A (5 giri, rec. 45\")","serie":"15 air squat + 10 wall ball (3-4 kg) + 20\" plank","rec":"45\" tra giri","note":"Nessuna pausa interna","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"15 min","rec":"—","note":"Passo costante, livello medio","rpe":null}]}]},{"nome":"MARTEDÌ — Upper + core","blocchi":[{"tipo":"warmup","items":[{"nome":"Tapis riscaldamento","serie":"8 min","rec":null,"note":"Pendenza 12%","rpe":null}]},{"tipo":"strength","items":[{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null},{"nome":"Chest press","serie":"4x12","rec":"75\"","note":"Gomiti a 45°","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Alzate laterali + Push up","serie":"4x12 + 4xmax","rec":"60\"","note":"Push up anche su panca inclinata","rpe":null}]},{"tipo":"strength","items":[{"nome":"Face pull","serie":"3x15","rec":"45\"","note":"Gomiti alti","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD B (5 giri, rec. 45\")","serie":"10 push up + 10 rematore manubrio leggero per lato + 10 wall ball + 20 mountain climber","rec":"45\" tra giri","note":"Fluido","rpe":null}]},{"tipo":"strength","items":[{"nome":"Crunch","serie":"3x20","rec":"30\"","note":"Controllati","rpe":null},{"nome":"Dead bug","serie":"3x12 per lato","rec":"30\"","note":"Schiena piatta a terra","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Bike finale","serie":"12 min","rec":"—","note":"Recupero attivo","rpe":null}]}]},{"nome":"Mercoledì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"GIOVEDÌ — Lower B (glutei focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Climb riscaldamento","serie":"8 min","rec":null,"note":"Passo lento","rpe":null}]},{"tipo":"strength","items":[{"nome":"Hip thrust","serie":"4x10","rec":"90\"","note":"Tenuta 3\" in massima contrazione","rpe":null},{"nome":"Stacco rumeno con manubri","serie":"4x12","rec":"90\"","note":"Schiena neutra, no inarcamento","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Frog pump + Good morning con bilanciere leggero (scarico)","serie":"3x20 + 3x12","rec":"75\"","note":null,"rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico con manubri leggeri","serie":"3x10 per gamba","rec":"60\"","note":"Focus sul gluteo","rpe":null},{"nome":"Glute kickback al cavo con cavigliera","serie":"4x12 per gamba","rec":"60\"","note":"Tenuta 2\" sul picco","rpe":null},{"nome":"Abduzione laterale al cavo con cavigliera","serie":"4x15 per gamba","rec":"45\"","note":"Tempo lento","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD C — glutes pump (6 giri, rec. 40\")","serie":"15 glute bridge + 10 affondi inversi alternati + 10 wall ball + 20 calci indietro a 4 zampe (10 per gamba)","rec":"40\" tra giri","note":"Pump garantito","rpe":null}]},{"tipo":"strength","items":[{"nome":"Russian twist","serie":"3x25","rec":"30\"","note":"Con o senza peso leggero","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"20 min","rec":"—","note":"Passo costante, livello medio-alto","rpe":null}]}]},{"nome":"Venerdì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"SABATO — Full body + cardio strutturato","blocchi":[{"tipo":"strength","items":[{"nome":"Push Press","serie":"4x12","rec":"75\"","note":"Fluido","rpe":null},{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Hip thrust + Wall sit","serie":"3x12 + 45\"","rec":"75\"","note":"Tenuta 3\" in massima contrazione hip thrust","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box jump","serie":"3x8","rec":"90\"","note":"Cubo 30-40 cm. Salita esplosiva, discesa camminata","rpe":null},{"nome":"Affondi statici","serie":"3x12 per gamba","rec":"60\"","note":"Alternare le gambe tra serie","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD D — full body (6 giri, rec. 60\")","serie":"10 goblet squat leggeri + 10 push up + 10 wall ball + 10 box step up per gamba + 20 jumping jack","rec":"60\" tra giri","note":"Cuore metabolico","rpe":null}]},{"tipo":"strength","items":[{"nome":"Dead bug","serie":"3x15 per lato","rec":"30\"","note":"Controllo totale","rpe":null}]},{"tipo":"cardio","items":[{"nome":"HIIT tapis","serie":"8 serie","rec":"—","note":"1 min camminata veloce pendenza 15% + 1 min piano","rpe":null}]}]},{"nome":"Domenica","blocchi":[{"tipo":"rest","items":["rest"]}]}]},{"numero":3,"inizio":"11/05/26","etichetta":"S3","giorni":[{"nome":"LUNEDÌ — Lower A (quad focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Bike riscaldamento","serie":"10 min","rec":null,"note":"Progressiva","rpe":null}]},{"tipo":"strength","items":[{"nome":"Goblet squat","serie":"4x12","rec":"75\"","note":"RPE 6-7","rpe":null},{"nome":"Leg press","serie":"4x12","rec":"90\"","note":"Piedi medi","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Affondi bulgari + Wall sit","serie":"3x10 per gamba + 45\"","rec":"75\"","note":"Tenuta 3\" in fondo all'affondo","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico","serie":"3x10 per gamba","rec":"60\"","note":"Spinta dal tallone, no slancio","rpe":null},{"nome":"Leg curl sdraiata","serie":"3x15","rec":"60\"","note":"Controllata","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD A (5 giri, rec. 45\")","serie":"15 air squat + 10 wall ball (3-4 kg) + 20\" plank","rec":"45\" tra giri","note":"Nessuna pausa interna","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"15 min","rec":"—","note":"Passo costante, livello medio","rpe":null}]}]},{"nome":"MARTEDÌ — Upper + core","blocchi":[{"tipo":"warmup","items":[{"nome":"Tapis riscaldamento","serie":"8 min","rec":null,"note":"Pendenza 12%","rpe":null}]},{"tipo":"strength","items":[{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null},{"nome":"Chest press","serie":"4x12","rec":"75\"","note":"Gomiti a 45°","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Alzate laterali + Push up","serie":"4x12 + 4xmax","rec":"60\"","note":"Push up anche su panca inclinata","rpe":null}]},{"tipo":"strength","items":[{"nome":"Face pull","serie":"3x15","rec":"45\"","note":"Gomiti alti","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD B (5 giri, rec. 45\")","serie":"10 push up + 10 rematore manubrio leggero per lato + 10 wall ball + 20 mountain climber","rec":"45\" tra giri","note":"Fluido","rpe":null}]},{"tipo":"strength","items":[{"nome":"Crunch","serie":"3x20","rec":"30\"","note":"Controllati","rpe":null},{"nome":"Dead bug","serie":"3x12 per lato","rec":"30\"","note":"Schiena piatta a terra","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Bike finale","serie":"12 min","rec":"—","note":"Recupero attivo","rpe":null}]}]},{"nome":"Mercoledì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"GIOVEDÌ — Lower B (glutei focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Climb riscaldamento","serie":"8 min","rec":null,"note":"Passo lento","rpe":null}]},{"tipo":"strength","items":[{"nome":"Hip thrust","serie":"4x10","rec":"90\"","note":"Tenuta 3\" in massima contrazione","rpe":null},{"nome":"Stacco rumeno con manubri","serie":"4x12","rec":"90\"","note":"Schiena neutra, no inarcamento","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Frog pump + Good morning con bilanciere leggero (scarico)","serie":"3x20 + 3x12","rec":"75\"","note":null,"rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico con manubri leggeri","serie":"3x10 per gamba","rec":"60\"","note":"Focus sul gluteo","rpe":null},{"nome":"Glute kickback al cavo con cavigliera","serie":"4x12 per gamba","rec":"60\"","note":"Tenuta 2\" sul picco","rpe":null},{"nome":"Abduzione laterale al cavo con cavigliera","serie":"4x15 per gamba","rec":"45\"","note":"Tempo lento","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD C — glutes pump (6 giri, rec. 40\")","serie":"15 glute bridge + 10 affondi inversi alternati + 10 wall ball + 20 calci indietro a 4 zampe (10 per gamba)","rec":"40\" tra giri","note":"Pump garantito","rpe":null}]},{"tipo":"strength","items":[{"nome":"Russian twist","serie":"3x25","rec":"30\"","note":"Con o senza peso leggero","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"20 min","rec":"—","note":"Passo costante, livello medio-alto","rpe":null}]}]},{"nome":"Venerdì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"SABATO — Full body + cardio strutturato","blocchi":[{"tipo":"strength","items":[{"nome":"Push Press","serie":"4x12","rec":"75\"","note":"Fluido","rpe":null},{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Hip thrust + Wall sit","serie":"3x12 + 45\"","rec":"75\"","note":"Tenuta 3\" in massima contrazione hip thrust","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box jump","serie":"3x8","rec":"90\"","note":"Cubo 30-40 cm. Salita esplosiva, discesa camminata","rpe":null},{"nome":"Affondi statici","serie":"3x12 per gamba","rec":"60\"","note":"Alternare le gambe tra serie","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD D — full body (6 giri, rec. 60\")","serie":"10 goblet squat leggeri + 10 push up + 10 wall ball + 10 box step up per gamba + 20 jumping jack","rec":"60\" tra giri","note":"Cuore metabolico","rpe":null}]},{"tipo":"strength","items":[{"nome":"Dead bug","serie":"3x15 per lato","rec":"30\"","note":"Controllo totale","rpe":null}]},{"tipo":"cardio","items":[{"nome":"HIIT tapis","serie":"8 serie","rec":"—","note":"1 min camminata veloce pendenza 15% + 1 min piano","rpe":null}]}]},{"nome":"Domenica","blocchi":[{"tipo":"rest","items":["rest"]}]}]},{"numero":4,"inizio":"18/05/26","etichetta":"S4","giorni":[{"nome":"LUNEDÌ — Lower A (quad focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Bike riscaldamento","serie":"10 min","rec":null,"note":"Progressiva","rpe":null}]},{"tipo":"strength","items":[{"nome":"Goblet squat","serie":"4x12","rec":"75\"","note":"RPE 6-7","rpe":null},{"nome":"Leg press","serie":"4x12","rec":"90\"","note":"Piedi medi","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Affondi bulgari + Wall sit","serie":"3x10 per gamba + 45\"","rec":"75\"","note":"Tenuta 3\" in fondo all'affondo","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico","serie":"3x10 per gamba","rec":"60\"","note":"Spinta dal tallone, no slancio","rpe":null},{"nome":"Leg curl sdraiata","serie":"3x15","rec":"60\"","note":"Controllata","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD A (5 giri, rec. 45\")","serie":"15 air squat + 10 wall ball (3-4 kg) + 20\" plank","rec":"45\" tra giri","note":"Nessuna pausa interna","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"15 min","rec":"—","note":"Passo costante, livello medio","rpe":null}]}]},{"nome":"MARTEDÌ — Upper + core","blocchi":[{"tipo":"warmup","items":[{"nome":"Tapis riscaldamento","serie":"8 min","rec":null,"note":"Pendenza 12%","rpe":null}]},{"tipo":"strength","items":[{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null},{"nome":"Chest press","serie":"4x12","rec":"75\"","note":"Gomiti a 45°","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Alzate laterali + Push up","serie":"4x12 + 4xmax","rec":"60\"","note":"Push up anche su panca inclinata","rpe":null}]},{"tipo":"strength","items":[{"nome":"Face pull","serie":"3x15","rec":"45\"","note":"Gomiti alti","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD B (5 giri, rec. 45\")","serie":"10 push up + 10 rematore manubrio leggero per lato + 10 wall ball + 20 mountain climber","rec":"45\" tra giri","note":"Fluido","rpe":null}]},{"tipo":"strength","items":[{"nome":"Crunch","serie":"3x20","rec":"30\"","note":"Controllati","rpe":null},{"nome":"Dead bug","serie":"3x12 per lato","rec":"30\"","note":"Schiena piatta a terra","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Bike finale","serie":"12 min","rec":"—","note":"Recupero attivo","rpe":null}]}]},{"nome":"Mercoledì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"GIOVEDÌ — Lower B (glutei focus)","blocchi":[{"tipo":"warmup","items":[{"nome":"Climb riscaldamento","serie":"8 min","rec":null,"note":"Passo lento","rpe":null}]},{"tipo":"strength","items":[{"nome":"Hip thrust","serie":"4x10","rec":"90\"","note":"Tenuta 3\" in massima contrazione","rpe":null},{"nome":"Stacco rumeno con manubri","serie":"4x12","rec":"90\"","note":"Schiena neutra, no inarcamento","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Frog pump + Good morning con bilanciere leggero (scarico)","serie":"3x20 + 3x12","rec":"75\"","note":null,"rpe":null}]},{"tipo":"strength","items":[{"nome":"Box step up monopodalico con manubri leggeri","serie":"3x10 per gamba","rec":"60\"","note":"Focus sul gluteo","rpe":null},{"nome":"Glute kickback al cavo con cavigliera","serie":"4x12 per gamba","rec":"60\"","note":"Tenuta 2\" sul picco","rpe":null},{"nome":"Abduzione laterale al cavo con cavigliera","serie":"4x15 per gamba","rec":"45\"","note":"Tempo lento","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD C — glutes pump (6 giri, rec. 40\")","serie":"15 glute bridge + 10 affondi inversi alternati + 10 wall ball + 20 calci indietro a 4 zampe (10 per gamba)","rec":"40\" tra giri","note":"Pump garantito","rpe":null}]},{"tipo":"strength","items":[{"nome":"Russian twist","serie":"3x25","rec":"30\"","note":"Con o senza peso leggero","rpe":null}]},{"tipo":"cardio","items":[{"nome":"Climb finale","serie":"20 min","rec":"—","note":"Passo costante, livello medio-alto","rpe":null}]}]},{"nome":"Venerdì","blocchi":[{"tipo":"rest","items":["rest"]}]},{"nome":"SABATO — Full body + cardio strutturato","blocchi":[{"tipo":"strength","items":[{"nome":"Push Press","serie":"4x12","rec":"75\"","note":"Fluido","rpe":null},{"nome":"Lat machine","serie":"4x12","rec":"75\"","note":"Presa prona","rpe":null}]},{"tipo":"superset","items":[{"nome":"SUPERSERIE: Hip thrust + Wall sit","serie":"3x12 + 45\"","rec":"75\"","note":"Tenuta 3\" in massima contrazione hip thrust","rpe":null}]},{"tipo":"strength","items":[{"nome":"Box jump","serie":"3x8","rec":"90\"","note":"Cubo 30-40 cm. Salita esplosiva, discesa camminata","rpe":null},{"nome":"Affondi statici","serie":"3x12 per gamba","rec":"60\"","note":"Alternare le gambe tra serie","rpe":null}]},{"tipo":"wod","items":[{"nome":"MINI-WOD D — full body (6 giri, rec. 60\")","serie":"10 goblet squat leggeri + 10 push up + 10 wall ball + 10 box step up per gamba + 20 jumping jack","rec":"60\" tra giri","note":"Cuore metabolico","rpe":null}]},{"tipo":"strength","items":[{"nome":"Dead bug","serie":"3x15 per lato","rec":"30\"","note":"Controllo totale","rpe":null}]},{"tipo":"cardio","items":[{"nome":"HIIT tapis","serie":"8 serie","rec":"—","note":"1 min camminata veloce pendenza 15% + 1 min piano","rpe":null}]}]},{"nome":"Domenica","blocchi":[{"tipo":"rest","items":["rest"]}]}]}]}};
+  const { esercizi, piano } = DATA_JSON;
+
+  // Sort exercise names by length desc for better matching priority
+  const EX_NAMES = Object.keys(esercizi).sort((a, b) => b.length - a.length);
+
+  // Normalize text for fuzzy match
+  function norm(s) {
+    return s.toLowerCase()
+      .replace(/[àá]/g, 'a')
+      .replace(/[èé]/g, 'e')
+      .replace(/[ìí]/g, 'i')
+      .replace(/[òó]/g, 'o')
+      .replace(/[ùú]/g, 'u')
+      .replace(/[^a-z0-9 ]/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+  }
+
+  // Aliases: words/phrases in the plan that map to an entry in LINK ES
+  const ALIASES = [
+    { match: ['hip thrust'], target: 'Hip Thrust bil' },
+    { match: ['croci manubri'], target: 'Croci manubri panca incl' },
+    { match: ['panca piana'], target: 'Panca piana' },
+    { match: ['panca inclinata'], target: 'Panca inclinata' },
+    { match: ['stacco regular'], target: 'Stacco regular' },
+    { match: ['stacco rumeno'], target: 'STACCO RUMENO' },
+    { match: ['stacco sumo'], target: 'Stacco sumo' },
+    { match: ['stacco'], target: 'Stacco regular' },
+    { match: ['thruster'], target: 'Thruster' },
+    { match: ['remata bilanciere', 'remate bilanciere', 'rematore bilanciere'], target: 'Rematore bilanciere' },
+    { match: ['rematore manubri', 'rematore singolo'], target: 'Rematore manubri' },
+    { match: ['rematore'], target: 'Rematore bilanciere' },
+    { match: ['trazioni'], target: 'Trazioni elastico' },
+    { match: ['hammer curl'], target: 'Hammer curl' },
+    { match: ['biceps curl', 'curl bil', 'curl ez'], target: 'Curl bilanciere ez' },
+    { match: ['curl manubri'], target: 'Curl manubri' },
+    { match: ['push down'], target: 'Push down fune' },
+    { match: ['push up', 'push ups', 'flessioni'], target: 'Push up ginocchia' },
+    { match: ['jump box', 'jump su box', 'box jump'], target: 'Jump box' },
+    { match: ['step up', 'step down'], target: 'Step up box' },
+    { match: ['burpees'], target: 'Burpees' },
+    { match: ['affondi'], target: 'Affondi in avanti' },
+    { match: ['squat'], target: 'SPLIT SQUAT' },
+    { match: ['goblet squat'], target: 'Goblet squat' },
+    { match: ['bulgarian'], target: 'Bulgarian Squat' },
+    { match: ['alzate laterali'], target: 'Alzate laterali in piedi' },
+    { match: ['alzate frontali'], target: 'Alzate frontali' },
+    { match: ['alzate post'], target: 'Alzate posteriori 90' },
+    { match: ['military press', 'overhead press'], target: 'Military press' },
+    { match: ['half kneeling press'], target: 'Military press' },
+    { match: ['mountain climber'], target: 'Mountain climbers' },
+    { match: ['plank'], target: 'Plank' },
+    { match: ['side plank'], target: 'Side plank' },
+    { match: ['russian twist'], target: 'Russian twist' },
+    { match: ['leg raise'], target: 'LEG RAISE' },
+    { match: ['leg curl'], target: 'Leg curl distesa' },
+    { match: ['leg ext'], target: 'Leg ext' },
+    { match: ['ponte glutei'], target: 'Ponte glutei' },
+    { match: ['face pull'], target: 'Face pull fune' },
+    { match: ['kick back'], target: 'Kick back' },
+    { match: ['french press'], target: 'French press EZ' },
+    { match: ['dips'], target: 'Dips' },
+    { match: ['tbar', 't-bar', 't bar'], target: 'Tbar row' },
+    { match: ['lat machine'], target: 'Lat machine larga' },
+    { match: ['pulley'], target: 'Pulley' },
+    { match: ['pull down'], target: 'Pull down' },
+    { match: ['arnold press'], target: 'Arnold press' },
+    { match: ['tirate al mento', 'upright row'], target: 'Tirate al mento' },
+    { match: ['monster walk'], target: 'Abduttori' },
+    { match: ['clamshell'], target: 'Clamshell aperture' },
+    { match: ['skip alto'], target: 'Skip alto' },
+    { match: ['jumping jack'], target: 'Jumping j' },
+    { match: ['jumping lunge'], target: 'Jumping Lunges' },
+    { match: ['mobilita', 'mobilità'], target: 'MOBILITà' },
+    { match: ['stretching'], target: "STRETCHING 5'" },
+    { match: ['superman'], target: 'SUPERMAN HOLD' },
+    { match: ['nordic'], target: 'Nordic leg curl' },
+    { match: ['bear crawl'], target: 'Bear crawl' },
+  ];
+
+  // Find YouTube link for a given exercise description cell
+  function findVideoLink(cellText) {
+    const n = norm(cellText);
+    // 1) alias match first (more specific, e.g. "hammer curl" beats generic "curl manubri")
+    for (const a of ALIASES) {
+      for (const m of a.match) {
+        if (n.includes(norm(m))) {
+          const url = esercizi[a.target];
+          if (url) return { name: a.target, url };
+        }
+      }
+    }
+    // 2) direct substring match by exercise name (longest first)
+    for (const name of EX_NAMES) {
+      const nn = norm(name);
+      if (nn.length < 6) continue;
+      if (n.includes(nn)) return { name, url: esercizi[name] };
+    }
+    return null;
+  }
+
+  // ---- State ----
+  const STATE_KEY = 'sofit_state_v1';
+  const state = Object.assign({
+    week: 0, day: 0,
+    done: {},     // "w-d-i" -> true
+    weights: {},  // "w-d-i" -> string (peso usato)
+    byName: {},   // norm(nome esercizio) -> ultimo peso usato (per hint cross-settimana)
+    notes: {},    // "w-d-i" -> string (nota esercizio)
+    feedback: {}, // "w-d" -> { score: 1-10, note: string }
+    eta: 30, sesso: 'm',
+  }, JSON.parse(localStorage.getItem(STATE_KEY) || '{}'));
+  if (!state.weights) state.weights = {};
+  if (!state.byName) state.byName = {};
+  if (!state.notes) state.notes = {};
+  if (!state.feedback) state.feedback = {};
+
+  function saveState() {
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  }
+
+  // ---- URL detection (Giorno 3 sometimes has a Garmin link) ----
+  function isUrl(s) {
+    return typeof s === 'string' && /^https?:\/\//.test(s.trim());
+  }
+
+  // Detect notes (personal reflection) vs exercises heuristically.
+  // Solo se contiene frasi chiave di riflessione — NON più in base alla lunghezza,
+  // perché le righe MIN con dettagli tecnici possono essere molto lunghe.
+  function isNote(s) {
+    if (typeof s !== 'string') return false;
+    const lower = s.toLowerCase();
+    // Parole di riflessione personale (frasi del coach/atleta sui propri sentimenti)
+    const reflectiveKw = ['soddisfatto', 'psicologo', 'bellissimo', 'aspettavo', 'braccia ok',
+      'fatica 8/10', 'fatica 7/10', 'fatica 9/10', 'presa molto male', 'emom 9/10', 'emom 10/10',
+      'ottimista', 'spavento', 'imbarazzante', 'mi sblocco', 'pensare oltre', 'accettarla'];
+    if (reflectiveKw.some(k => lower.includes(k))) return true;
+    return false;
+  }
+
+  // Frasi motivazionali ironiche (cambiano ad ogni sessione)
+  const QUOTES = [
+    "Sofiiii, meno storie e più hip thrust.",
+    "Oggi niente scuse: il tuo fondoschiena ha un appuntamento con la storia.",
+    "I glutei non crescono mentre scrolli Instagram. Alza 'sta macchina.",
+    "Se l'RPE è 3, stai facendo finta. Carica.",
+    "La wall ball non si lancia con la forza delle scuse.",
+    "Hai pianificato tutto a tavolino, ora eseguilo. SoF(r)it, non SoFlop.",
+    "Un altro squat. Poi un altro. Poi un altro. Questo è il piano.",
+    "Le unghie laccate di fresco non sono una scusa per saltare la palestra.",
+    "Il cardio finale esiste perché il coach ti odia bene. Finiscilo.",
+    "Se dopo il mini-WOD non sei rossa in faccia hai barato.",
+    "Box step up: spingi dal tallone, non lamentarti dal diaframma.",
+    "Mese 1, settimana 1, serie 1: inizia a esistere.",
+    "Sei qui: bravissima. Ora fai qualcosa, non limitarti a respirare.",
+    "Le foto del 'prima e dopo' non si scattano da sole. Guadagnatele.",
+    "Il wall sit è come la vita: tieni duro e conta solo i minuti che mancano.",
+    "Hai scelto tu il leg curl. Adesso pedala.",
+    "I frog pump sono ridicoli ma funzionano. Smettila di ridere e contrai.",
+    "Dead bug non significa stare sdraiata a riposare.",
+    "Se finisci con RPE 10, buono. Se finisci con 6, era troppo leggero. Prossima volta aggiungi.",
+    "Il piatto di pasta della domenica sa di vittoria solo se oggi ti sei spaccata."
+  ];
+  function quoteFor(w, d) {
+    const idx = ((w * 7 + d) + (state.quoteShift || 0)) % QUOTES.length;
+    return QUOTES[idx];
+  }
+
+  // ---- Render ----
+  const main = document.getElementById('main');
+  const weekTabs = document.getElementById('week-tabs');
+  const dayTabs = document.getElementById('day-tabs');
+
+  function renderWeekTabs() {
+    weekTabs.innerHTML = '';
+    piano.settimane.forEach((w, i) => {
+      const b = document.createElement('button');
+      b.className = 'week-tab' + (i === state.week ? ' active' : '');
+      const label = w.etichetta || `Sett ${w.numero}`;
+      b.innerHTML = `${label}<small>dal ${w.inizio}</small>`;
+      b.onclick = () => { state.week = i; state.day = 0; saveState(); renderAll(); };
+      weekTabs.appendChild(b);
+    });
+  }
+
+  function dayShortName(name, idx) {
+    const short = ['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
+    return short[idx] || name;
+  }
+
+  function isDayRest(d) {
+    const blks = d.blocchi || [];
+    if (blks.length === 0) return true;
+    // single block with single "rest" string
+    if (blks.length === 1 && blks[0].items && blks[0].items.length === 1) {
+      const it = blks[0].items[0];
+      if (typeof it === 'string' && it.trim().toLowerCase() === 'rest') return true;
+    }
+    return false;
+  }
+
+  function shouldSkipCount(item) {
+    if (typeof item === 'string') return isNote(item) || isUrl(item);
+    return false;
+  }
+
+  function dayProgress(wIdx, dIdx, blocchi) {
+    let total = 0, done = 0;
+    (blocchi || []).forEach((blk, bIdx) => {
+      if (blk.tipo === 'warmup') return;
+      (blk.items || []).forEach((it, iIdx) => {
+        if (shouldSkipCount(it)) return;
+        total++;
+        if (state.done[`${wIdx}-${dIdx}-${bIdx}-${iIdx}`]) done++;
+      });
+    });
+    if (total === 0) return { pct: 0, done: 0, total: 0 };
+    return { pct: Math.round(done * 100 / total), done, total };
+  }
+
+  // Detect block kind: il tipo è già impostato in data.json dal parser
+  function blockKind(blk) {
+    if (blk.tipo === 'warmup') return 'warmup';
+    if (blk.tipo === 'superset') return 'superset';
+    if (blk.tipo === 'wod') return 'wod';
+    if (blk.tipo === 'cardio') return 'cardio';
+    if (blk.tipo === 'strength') return 'strength';
+    // Fallback heuristic (non dovrebbe mai servire con i dati Sofia)
+    return 'strength';
+  }
+
+  const BLOCK_META = {
+    warmup: { icon: '🔥', title: 'Riscaldamento' },
+    superset: { icon: '⚡', title: 'Superserie' },
+    wod: { icon: '💥', title: 'Mini-WOD' },
+    cardio: { icon: '🏃', title: 'Cardio' },
+    strength: { icon: '💪', title: 'Forza' },
+  };
+
+  function renderDayTabs() {
+    const w = piano.settimane[state.week];
+    dayTabs.innerHTML = '';
+    w.giorni.forEach((d, i) => {
+      const b = document.createElement('button');
+      const rest = isDayRest(d);
+      b.className = 'day-tab' + (i === state.day ? ' active' : '') + (rest ? ' rest' : '');
+      const prog = dayProgress(state.week, i, d.blocchi);
+      const dotHtml = prog.total > 0 && prog.done === prog.total ? '<span class="dot"></span>' : '';
+      b.innerHTML = `${dayShortName(d.nome, i)}${dotHtml}`;
+      b.onclick = () => { state.day = i; saveState(); renderDayTabs(); renderMain(); };
+      dayTabs.appendChild(b);
+    });
+  }
+
+  function renderMain() {
+    const w = piano.settimane[state.week];
+    const d = w.giorni[state.day];
+    const blocchi = d.blocchi || [];
+    const prog = dayProgress(state.week, state.day, blocchi);
+
+    if (isDayRest(d)) {
+      main.innerHTML = `
+        <div class="day-header">
+          <div>
+            <div class="day-title">${d.nome}</div>
+            <div class="day-meta">Settimana ${w.numero} · dal ${w.inizio}</div>
+          </div>
+        </div>
+        <div class="rest-card">
+          <div class="rest-card-icon">💤</div>
+          <div class="rest-card-title">Giorno di riposo</div>
+          <div class="rest-card-sub">Recupero attivo facoltativo: mobilità, stretching, camminata.</div>
+        </div>`;
+      return;
+    }
+
+    let html = `
+      <div class="day-header">
+        <div>
+          <div class="day-title">${d.nome}</div>
+          <div class="day-meta">Settimana ${w.numero} · ${prog.done}/${prog.total} completati</div>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${prog.pct}%"></div></div>
+      <div class="motivation">
+        <button class="motivation-shuffle" id="quote-shuffle" title="Cambia frase">↻</button>
+        <div class="motivation-text" id="quote-text">${esc(quoteFor(state.week, state.day))}</div>
+        <div class="motivation-sign">— il tuo coach ti sta giudicando</div>
+      </div>
+    `;
+
+    blocchi.forEach((blk, bIdx) => {
+      html += renderBlock(blk, bIdx);
+    });
+
+    html += renderFeedback(state.week, state.day);
+
+    main.innerHTML = html;
+
+    // Quote shuffle
+    const qs = document.getElementById('quote-shuffle');
+    if (qs) qs.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.quoteShift = (state.quoteShift || 0) + 1;
+      saveState();
+      const qt = document.getElementById('quote-text');
+      if (qt) qt.textContent = quoteFor(state.week, state.day);
+    });
+
+    // Attach checkbox listeners
+    main.querySelectorAll('[data-toggle]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const key = el.getAttribute('data-toggle');
+        state.done[key] = !state.done[key];
+        saveState();
+        renderMain();
+        renderDayTabs();
+      });
+    });
+
+    // Weight inputs: save on change/blur, don't re-render (to keep focus)
+    main.querySelectorAll('[data-weight]').forEach(el => {
+      const commit = () => {
+        const key = el.getAttribute('data-weight');
+        const exKey = el.getAttribute('data-exkey');
+        const val = el.value.trim();
+        if (val) {
+          state.weights[key] = val;
+          if (exKey) state.byName[exKey] = val;
+        } else {
+          delete state.weights[key];
+        }
+        saveState();
+      };
+      el.addEventListener('blur', commit);
+      el.addEventListener('change', commit);
+      el.addEventListener('click', e => e.stopPropagation());
+    });
+
+    // Per-exercise notes: save on blur
+    main.querySelectorAll('[data-exnote]').forEach(el => {
+      const commit = () => {
+        const key = el.getAttribute('data-exnote');
+        const val = el.value.trim();
+        if (val) state.notes[key] = val;
+        else delete state.notes[key];
+        saveState();
+      };
+      el.addEventListener('blur', commit);
+      el.addEventListener('change', commit);
+      el.addEventListener('click', e => e.stopPropagation());
+    });
+
+    // Feedback score buttons
+    main.querySelectorAll('.score-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const n = parseInt(btn.dataset.score, 10);
+        const k = `${state.week}-${state.day}`;
+        state.feedback[k] = Object.assign({}, state.feedback[k], { score: n });
+        saveState();
+        // toggle selected visuals without re-rendering whole main
+        main.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        flashSaved(k);
+      });
+    });
+
+    // Feedback note
+    main.querySelectorAll('[data-fbnote]').forEach(el => {
+      const commit = () => {
+        const k = el.getAttribute('data-fbnote');
+        const val = el.value.trim();
+        state.feedback[k] = Object.assign({}, state.feedback[k], { note: val });
+        if (!val && !(state.feedback[k] && state.feedback[k].score)) delete state.feedback[k];
+        saveState();
+        flashSaved(k);
+      };
+      el.addEventListener('blur', commit);
+      el.addEventListener('change', commit);
+      el.addEventListener('click', e => e.stopPropagation());
+    });
+  }
+
+  function flashSaved(k) {
+    const el = document.getElementById('fb-saved-' + k);
+    if (!el) return;
+    el.classList.add('show');
+    clearTimeout(flashSaved._t);
+    flashSaved._t = setTimeout(() => el.classList.remove('show'), 1500);
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+  }
+
+  function renderBlock(blk, bIdx) {
+    const kind = blockKind(blk);
+    const meta = BLOCK_META[kind] || BLOCK_META.strength;
+    const count = (blk.items || []).filter(it => !(typeof it === 'string' && (isNote(it) || isUrl(it)))).length;
+
+    let inner = '';
+    (blk.items || []).forEach((it, iIdx) => {
+      inner += renderItem(it, state.week, state.day, bIdx, iIdx);
+    });
+
+    const subLabel = count === 1 ? '1 item' : `${count} item`;
+    return `<div class="block ${kind}">
+      <div class="block-header">
+        <div class="block-icon">${meta.icon}</div>
+        <div class="block-title">${meta.title}</div>
+        <div class="block-sub">${subLabel}</div>
+      </div>
+      ${inner}
+    </div>`;
+  }
+
+  function renderItem(it, w, d, b, i) {
+    const key = `${w}-${d}-${b}-${i}`;
+    const done = state.done[key];
+
+    // URL
+    if (typeof it === 'string' && isUrl(it)) {
+      return `<div class="card" style="background:rgba(59,130,246,0.08); border-color:rgba(59,130,246,0.2);">
+        <div class="card-body">
+          <div style="font-size:12px; color:var(--text-dim); margin-bottom:4px;">Riferimento</div>
+          <a class="link-external" href="${esc(it)}" target="_blank" rel="noopener">${esc(it)}</a>
+        </div>
+      </div>`;
+    }
+    // Note
+    if (typeof it === 'string' && isNote(it)) {
+      return `<div class="note-card">💬 ${esc(it)}</div>`;
+    }
+    // Structured
+    if (typeof it === 'object' && it !== null) {
+      const name = it.nome || '';
+      const video = findVideoLink(name);
+      const tags = [];
+      if (it.serie) tags.push(`<span class="tag serie">${esc(it.serie)}</span>`);
+      if (it.reps) tags.push(`<span class="tag reps">${esc(it.reps)}</span>`);
+      if (it.rec) tags.push(`<span class="tag rec">⏱ ${esc(it.rec)}</span>`);
+      if (it.rpe) tags.push(`<span class="tag rpe">RPE ${esc(it.rpe)}</span>`);
+      if (it.note) tags.push(`<span class="tag note">${esc(it.note)}</span>`);
+      return `<div class="card ${done?'done':''}">
+        <div class="card-head">
+          <div class="check ${done?'done':''}" data-toggle="${key}"></div>
+          <div class="card-body">
+            <div class="card-name">${esc(name)}</div>
+            ${tags.length ? `<div class="card-tags">${tags.join('')}</div>` : ''}
+            ${video ? `<a class="video-btn" href="${esc(video.url)}" target="_blank" rel="noopener">▶ Video: ${esc(video.name)}</a>` : ''}
+            ${renderWeight(key, name, video, true)}
+            ${renderExerciseNote(key)}
+          </div>
+        </div>
+      </div>`;
+    }
+    // Plain string
+    const text = String(it);
+    const video = findVideoLink(text);
+    return `<div class="card ${done?'done':''}">
+      <div class="card-head">
+        <div class="check ${done?'done':''}" data-toggle="${key}"></div>
+        <div class="card-body">
+          <div class="card-name">${esc(text)}</div>
+          ${video ? `<a class="video-btn" href="${esc(video.url)}" target="_blank" rel="noopener">▶ Video: ${esc(video.name)}</a>` : ''}
+          ${renderWeight(key, text, video, false)}
+          ${renderExerciseNote(key)}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function exerciseKey(text, video) {
+    if (video && video.name) return norm(video.name);
+    return norm(text).slice(0, 60);
+  }
+
+  function isWeightable(text, video, isStructured) {
+    // isStructured=true per warmup e Giorno 2 → mostra sempre il campo peso
+    if (isStructured) return true;
+    if (video) return true;
+    const n = norm(text);
+    if (/kg/.test(n)) return true;
+    if (/\d+\s*x\s*\d+/.test(n)) return true;
+    return false;
+  }
+
+  function renderWeight(key, text, video, isStructured) {
+    if (!isWeightable(text, video, isStructured)) return '';
+    const exKey = exerciseKey(text, video);
+    const current = state.weights[key] || '';
+    const hint = state.byName[exKey] && state.byName[exKey] !== current ? state.byName[exKey] : '';
+    return `<div class="weight-row">
+      <span class="weight-label">Peso</span>
+      <input class="weight-input" type="text" inputmode="decimal"
+        data-weight="${key}" data-exkey="${esc(exKey)}"
+        value="${esc(current)}" placeholder="es. 80 kg" />
+      ${hint ? `<span class="weight-hint">Ultimo: <strong>${esc(hint)}</strong></span>` : ''}
+    </div>`;
+  }
+
+  function renderExerciseNote(key) {
+    const note = state.notes[key] || '';
+    return `<div class="ex-note-row">
+      <span class="weight-label" style="padding-top:8px;">Nota</span>
+      <textarea class="ex-note-input" data-exnote="${key}" rows="1"
+        placeholder="commento personale (opzionale)">${esc(note)}</textarea>
+    </div>`;
+  }
+
+  function renderFeedback(w, d) {
+    const k = `${w}-${d}`;
+    const fb = state.feedback[k] || {};
+    const score = fb.score || 0;
+    const note = fb.note || '';
+    const scoreBtns = Array.from({length: 10}, (_, i) => {
+      const n = i + 1;
+      const scaleCls = n <= 3 ? 'scale-low' : n <= 7 ? 'scale-mid' : 'scale-high';
+      return `<button class="score-btn ${scaleCls} ${score === n ? 'selected' : ''}" data-score="${n}">${n}</button>`;
+    }).join('');
+    return `<div class="feedback-card">
+      <div class="feedback-title">🎯 Feedback allenamento</div>
+      <div class="feedback-section">
+        <div class="feedback-section-label">Sforzo / Soddisfazione (1–10)</div>
+        <div class="score-buttons">${scoreBtns}</div>
+      </div>
+      <div class="feedback-section">
+        <div class="feedback-section-label">Commento generale</div>
+        <textarea class="feedback-note" data-fbnote="${k}"
+          placeholder="Come ti sei sentito? Cosa ha funzionato? Cosa migliorare?">${esc(note)}</textarea>
+        <div class="feedback-saved" id="fb-saved-${k}">✓ salvato</div>
+      </div>
+    </div>`;
+  }
+
+  function renderAll() {
+    renderWeekTabs();
+    renderDayTabs();
+    renderMain();
+  }
+
+  // ---- Modals ----
+  document.querySelectorAll('[data-close]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.getElementById(b.getAttribute('data-close')).classList.remove('open');
+    });
+  });
+  document.querySelectorAll('.modal-overlay').forEach(ov => {
+    ov.addEventListener('click', (e) => {
+      if (e.target === ov) ov.classList.remove('open');
+    });
+  });
+  document.getElementById('btn-info').onclick = () => {
+    document.getElementById('eta').value = state.eta;
+    document.getElementById('sesso').value = state.sesso;
+    computeZones();
+    document.getElementById('modal-info').classList.add('open');
+  };
+
+  // ---- HR zones ----
+  function computeZones() {
+    const eta = parseInt(document.getElementById('eta').value || state.eta, 10);
+    const sesso = document.getElementById('sesso').value;
+    state.eta = eta; state.sesso = sesso; saveState();
+    const max = sesso === 'f' ? (226 - eta) : (220 - eta);
+    const zones = [
+      { n:'Zona 1', r:'50-60%', lo: Math.round(max*0.5), hi: Math.round(max*0.6), col:'#60a5fa' },
+      { n:'Zona 2', r:'60-70%', lo: Math.round(max*0.6), hi: Math.round(max*0.7), col:'#22c55e' },
+      { n:'Zona 3', r:'70-80%', lo: Math.round(max*0.7), hi: Math.round(max*0.8), col:'#eab308' },
+      { n:'Zona 4', r:'80-90%', lo: Math.round(max*0.8), hi: Math.round(max*0.9), col:'#f97316' },
+      { n:'Zona 5', r:'90-100%', lo: Math.round(max*0.9), hi: max, col:'#ef4444' },
+    ];
+    const el = document.getElementById('zone-list');
+    el.innerHTML = `<div style="padding:8px 0 4px; font-size:13px; color:var(--text-dim);">FCmax stimata: <strong style="color:var(--text)">${max} bpm</strong></div>` +
+      zones.map(z => `<div class="zone-row">
+        <div><span class="zone-label" style="color:${z.col}">${z.n}</span> · <small style="color:var(--text-dim)">${z.r}</small></div>
+        <div class="zone-bpm">${z.lo}–${z.hi} bpm</div>
+      </div>`).join('');
+  }
+  document.getElementById('eta').addEventListener('input', computeZones);
+  document.getElementById('sesso').addEventListener('change', computeZones);
+
+  // ---- Timer ----
+  let timerTotal = 90, timerRemaining = 90, timerInterval = null, timerRunning = false;
+  const tDisplay = document.getElementById('timer-display');
+  const tToggle = document.getElementById('timer-toggle');
+  const tReset = document.getElementById('timer-reset');
+
+  function fmt(s) {
+    const m = Math.floor(s/60), x = s%60;
+    return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`;
+  }
+  function updateTimer() {
+    tDisplay.textContent = fmt(Math.max(0, timerRemaining));
+    tDisplay.classList.toggle('running', timerRunning && timerRemaining > 0);
+    tDisplay.classList.toggle('done', timerRemaining <= 0);
+  }
+  function beep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880; o.type = 'sine';
+      g.gain.setValueAtTime(0.3, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(); o.stop(ctx.currentTime + 0.4);
+      if (navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 400]);
+    } catch(e) {}
+  }
+  function startTimer() {
+    timerRunning = true; tToggle.textContent = 'Pausa';
+    timerInterval = setInterval(() => {
+      timerRemaining -= 1;
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval); timerRunning = false;
+        tToggle.textContent = 'Riavvia'; beep();
+      }
+      updateTimer();
+    }, 1000);
+  }
+  function pauseTimer() {
+    timerRunning = false; clearInterval(timerInterval);
+    tToggle.textContent = 'Riprendi';
+  }
+  tToggle.onclick = () => {
+    if (timerRemaining <= 0) { timerRemaining = timerTotal; updateTimer(); startTimer(); return; }
+    timerRunning ? pauseTimer() : startTimer();
+  };
+  tReset.onclick = () => {
+    clearInterval(timerInterval); timerRunning = false;
+    timerRemaining = timerTotal; tToggle.textContent = 'Avvia'; updateTimer();
+  };
+  document.querySelectorAll('.preset').forEach(p => {
+    p.onclick = () => {
+      timerTotal = parseInt(p.dataset.sec, 10);
+      timerRemaining = timerTotal;
+      clearInterval(timerInterval); timerRunning = false;
+      tToggle.textContent = 'Avvia'; updateTimer();
+    };
+  });
+  document.getElementById('btn-timer').onclick = () => {
+    document.getElementById('modal-timer').classList.add('open');
+  };
+  updateTimer();
+
+  // ---- Init ----
+  renderAll();
+})();
+</script>
+</body>
+</html>
